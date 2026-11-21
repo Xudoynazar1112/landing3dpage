@@ -1,0 +1,6 @@
+{
+  "name": "Dr. Zohidjon Nurmanovich — Bolalar nevrologiyasi",
+  "description": "Dr. Zohidjon Nurmanovich (MD, PhD, DSc) — 19 yillik tajribaga ega bolalar nevrologi. Interaktiv 3D neyro-diagnostika, zamonaviy davolash usullari va onlayn qabulga yozilish.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
