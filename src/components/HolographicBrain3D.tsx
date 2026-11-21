@@ -171,6 +171,7 @@ export function HolographicBrain3D({
     autoOrbit,
     exploded,
     manualOverrideUntil: 0,
+    orbitResetVersion: 0,
   });
 
   // Sync props to mutable ref without recreating WebGL context
@@ -179,6 +180,7 @@ export function HolographicBrain3D({
     stateRef.current.targetAzimuth = activeSpecialty.cameraAngle[0];
     stateRef.current.targetElevation = activeSpecialty.cameraAngle[1];
     stateRef.current.accentColor.set(activeSpecialty.accentHex);
+    stateRef.current.orbitResetVersion += 1;
   }, [activeSpecialty]);
 
   useEffect(() => {
@@ -882,6 +884,8 @@ export function HolographicBrain3D({
     let disposed = false;
     let lastTime = performance.now();
     let elapsed = 0;
+    let orbitSpin = 0;
+    let seenOrbitReset = stateRef.current.orbitResetVersion;
     let explodeFactor = 0;
     const currentFocus = stateRef.current.focusPoint.clone();
 
@@ -968,11 +972,11 @@ export function HolographicBrain3D({
       // Subtle floating levitation of the brain assembly
       brainAssembly.position.y = 0.34 + Math.sin(elapsed * 1.35) * 0.05;
 
-      // Counter-rotate orbiting 3D gyroscopic telemetry hoops
-      orbitRing.rotation.z = elapsed * 0.24;
-      orbitRing.rotation.y = elapsed * 0.16;
-      gyroGoldRing.rotation.z = -elapsed * 0.18;
-      gyroGoldRing.rotation.y = -elapsed * 0.22 + 0.45;
+      // Counter-rotate orbiting 3D gyroscopic telemetry hoops (livelier holographic pace)
+      orbitRing.rotation.z = elapsed * 0.42;
+      orbitRing.rotation.y = elapsed * 0.3;
+      gyroGoldRing.rotation.z = -elapsed * 0.32;
+      gyroGoldRing.rotation.y = -elapsed * 0.38 + 0.45;
 
       // Animate synaptic impulse particles along cortical tracts (zero allocations)
       for (let i = 0; i < pulseCount; i++) {
@@ -1019,7 +1023,12 @@ export function HolographicBrain3D({
         sAttr.needsUpdate = true;
       }
 
-      // Camera kinematics: blend drag, auto-orbit, specialty focus angle, and scroll parallax
+      // Camera kinematics: blend drag, slightly faster continuous auto-orbit, specialty focus, and scroll parallax
+      if (st.orbitResetVersion !== seenOrbitReset) {
+        seenOrbitReset = st.orbitResetVersion;
+        orbitSpin = 0;
+      }
+
       const scrollBias = (scrollProgressRef.current - 0.35) * 0.65;
       const isManual = isDragging || now < st.manualOverrideUntil;
       let desiredAzimuth: number;
@@ -1029,15 +1038,17 @@ export function HolographicBrain3D({
         desiredAzimuth = dragAzimuth;
         desiredElevation = dragElevation;
       } else {
-        const autoDrift = st.autoOrbit && !reducedMotion ? Math.sin(elapsed * 0.35) * 0.48 : 0;
-        desiredAzimuth = st.targetAzimuth + autoDrift + scrollBias * 0.5;
+        if (st.autoOrbit && !reducedMotion) {
+          orbitSpin += dt * 0.42;
+        }
+        desiredAzimuth = st.targetAzimuth + orbitSpin + scrollBias * 0.45;
         desiredElevation = THREE.MathUtils.clamp(st.targetElevation + scrollBias * 0.16, -0.35, 0.62);
       }
 
-      currentAzimuth = THREE.MathUtils.damp(currentAzimuth, desiredAzimuth, 4.2, dt);
-      currentElevation = THREE.MathUtils.damp(currentElevation, desiredElevation, 4.2, dt);
+      currentAzimuth = THREE.MathUtils.damp(currentAzimuth, desiredAzimuth, 4.6, dt);
+      currentElevation = THREE.MathUtils.damp(currentElevation, desiredElevation, 4.6, dt);
 
-      const radius = camera.aspect < 0.95 ? 6.15 : 5.35;
+      const radius = camera.aspect < 0.95 ? 5.65 : 5.05;
       camera.position.x = Math.sin(currentAzimuth) * Math.cos(currentElevation) * radius;
       camera.position.y = 0.25 + Math.sin(currentElevation) * radius * 0.62;
       camera.position.z = Math.cos(currentAzimuth) * Math.cos(currentElevation) * radius;
@@ -1076,7 +1087,7 @@ export function HolographicBrain3D({
   return (
     <div
       ref={mountRef}
-      className="relative h-[290px] w-full min-w-0 max-w-full overflow-hidden select-none sm:h-[420px] lg:h-[520px]"
+      className="relative h-[380px] w-full min-w-0 max-w-full overflow-hidden select-none sm:h-[500px] lg:h-[620px] xl:h-[660px]"
       aria-label="Interactive 3D holographic brain model"
     />
   );

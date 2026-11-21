@@ -5,9 +5,11 @@ import {
   Calendar,
   CheckCircle2,
   Clock,
+  ExternalLink,
   Mail,
   MapPin,
   MessageCircle,
+  Navigation,
   Phone,
   Send,
   Video,
@@ -42,6 +44,24 @@ interface BookingSectionProps {
 
 const STORAGE_KEY = 'dr_zokhidjon_bookings_v1';
 const TIME_SLOTS = ['13:00', '14:00', '15:00', '16:00', '17:00', '10:00 (Sat)'];
+
+const MAP_LABELS: Record<Locale, { title: string; google: string; yandex: string }> = {
+  uz: {
+    title: 'Klinika xaritada (lokatsiya)',
+    google: 'Google Maps',
+    yandex: 'Yandex Maps',
+  },
+  ru: {
+    title: 'Локация клиники на карте',
+    google: 'Google Карты',
+    yandex: 'Яндекс Карты',
+  },
+  en: {
+    title: 'Clinic Location on Map',
+    google: 'Google Maps',
+    yandex: 'Yandex Maps',
+  },
+};
 
 function getDefaultDate(): string {
   const d = new Date();
@@ -140,15 +160,15 @@ export function BookingSection({
 
   return (
     <section id="booking" className="relative overflow-x-clip py-14 sm:py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-[1840px] px-4 sm:px-6 lg:px-10 xl:px-14">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-          className="neuro-panel overflow-hidden rounded-3xl p-5 sm:p-10 lg:p-12"
+          className="neuro-panel overflow-hidden rounded-3xl p-5 sm:p-10 lg:p-12 xl:p-14"
         >
-          <div className="grid gap-8 lg:grid-cols-12 lg:items-start lg:gap-10">
+          <div className="grid gap-8 lg:grid-cols-12 lg:items-start lg:gap-12 xl:gap-16">
             {/* Left column: Authentic drzokhidjon.uz clinic details & direct contacts */}
             <div className="min-w-0 lg:col-span-5">
               <h2 className="text-2xl font-bold tracking-tight text-white sm:text-4xl">
@@ -234,6 +254,48 @@ export function BookingSection({
                   <Send className="h-4 w-4 shrink-0" />
                   <span className="truncate">{copy.telegram}</span>
                 </a>
+              </div>
+
+              {/* Authentic drzokhidjon.uz Clinic Location Map (41.3631232, 69.2412239) */}
+              <div className="mt-6 overflow-hidden rounded-2xl border border-sky-400/25 bg-[#050C1C]">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-sky-400/15 px-3.5 py-2.5">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-white">
+                    <Navigation className="h-3.5 w-3.5 text-[#F6C86E]" />
+                    <span>{MAP_LABELS[locale].title}</span>
+                  </div>
+                  <span className="font-mono text-[11px] tabular-nums text-sky-300">
+                    {CLINIC_CONTACTS.mapLat.toFixed(5)}, {CLINIC_CONTACTS.mapLng.toFixed(5)}
+                  </span>
+                </div>
+                <div className="relative h-[200px] w-full bg-[#071226] sm:h-[225px]">
+                  <iframe
+                    src={CLINIC_CONTACTS.googleMapsEmbedUrl}
+                    title={copy.clinicAddress}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className="h-full w-full border-0 brightness-[0.92] contrast-[1.05]"
+                  />
+                </div>
+                <div className="grid grid-cols-2 divide-x divide-sky-400/15 border-t border-sky-400/15 bg-[#071329]/95">
+                  <a
+                    href={CLINIC_CONTACTS.googleMapsUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex min-h-10 items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-200 transition-colors hover:bg-sky-500/10 hover:text-[#FCE19A]"
+                  >
+                    <span>{MAP_LABELS[locale].google}</span>
+                    <ExternalLink className="h-3.5 w-3.5 text-[#F6C86E]" />
+                  </a>
+                  <a
+                    href={CLINIC_CONTACTS.yandexMapsUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex min-h-10 items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-200 transition-colors hover:bg-sky-500/10 hover:text-[#FCE19A]"
+                  >
+                    <span>{MAP_LABELS[locale].yandex}</span>
+                    <ExternalLink className="h-3.5 w-3.5 text-[#F6C86E]" />
+                  </a>
+                </div>
               </div>
 
               {/* Saved recent requests from localStorage */}

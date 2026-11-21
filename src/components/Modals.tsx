@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import {
   Check,
   Copy,
-  Pause,
-  Play,
+  ExternalLink,
+  RotateCcw,
   X,
   BookOpen,
   GraduationCap,
@@ -23,6 +23,27 @@ interface AboutModalProps {
   onBookClick: () => void;
 }
 
+const VIDEO_LABELS: Record<
+  Locale,
+  { startHighlight: string; startBeginning: string; watchOnYoutube: string }
+> = {
+  uz: {
+    startHighlight: '1:35 dan boshlash',
+    startBeginning: 'Boshidan (0:00)',
+    watchOnYoutube: 'YouTube’da ochish',
+  },
+  ru: {
+    startHighlight: 'С 1:35',
+    startBeginning: 'С начала (0:00)',
+    watchOnYoutube: 'Открыть в YouTube',
+  },
+  en: {
+    startHighlight: 'Start at 1:35',
+    startBeginning: 'From start (0:00)',
+    watchOnYoutube: 'Watch on YouTube',
+  },
+};
+
 export function AboutDoctorModal({
   open,
   onClose,
@@ -30,12 +51,12 @@ export function AboutDoctorModal({
   onBookClick,
 }: AboutModalProps) {
   const copy = UI_COPY[locale].aboutModal;
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [progress, setProgress] = useState(0); // 0 to 80 seconds
-  const [activeChapter, setActiveChapter] = useState(0);
+  const videoLabels = VIDEO_LABELS[locale];
+  const [startSec, setStartSec] = useState<number>(ASSETS.introVideoStartSec);
 
   useEffect(() => {
     if (!open) return;
+    setStartSec(ASSETS.introVideoStartSec);
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
@@ -43,29 +64,9 @@ export function AboutDoctorModal({
     return () => window.removeEventListener('keydown', onKey);
   }, [open, onClose]);
 
-  useEffect(() => {
-    if (!open || !isPlaying) return;
-    const interval = window.setInterval(() => {
-      setProgress((prev) => {
-        const next = prev >= 80 ? 0 : prev + 0.5;
-        if (next < 28) setActiveChapter(0);
-        else if (next < 54) setActiveChapter(1);
-        else setActiveChapter(2);
-        return next;
-      });
-    }, 500);
-    return () => clearInterval(interval);
-  }, [open, isPlaying]);
-
   if (!open) return null;
 
-  const formatSec = (s: number) => {
-    const mins = Math.floor(s / 60);
-    const secs = Math.floor(s % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const chapterStarts = [0, 28, 54];
+  const embedUrl = `https://www.youtube.com/embed/${ASSETS.introVideoId}?start=${startSec}&autoplay=1&rel=0&modestbranding=1`;
 
   return (
     <div
@@ -92,81 +93,57 @@ export function AboutDoctorModal({
           </button>
         </div>
 
-        {/* Interactive chaptered presentation player */}
-        <div className="relative mb-6 overflow-hidden rounded-xl border border-sky-400/20 bg-[#050C1C]">
-          <div className="relative aspect-video w-full overflow-hidden">
-            <img
-              src={ASSETS.aboutConsultation}
-              alt="Dr. Zohidjon Nurmanovich"
-              referrerPolicy="no-referrer"
-              className="h-full w-full object-cover object-center transition-transform duration-700"
-              style={{ transform: isPlaying ? 'scale(1.03)' : 'scale(1)' }}
+        {/* Embedded YouTube Video Player */}
+        <div className="relative mb-6 overflow-hidden rounded-xl border border-sky-400/25 bg-[#050C1C] shadow-[0_18px_45px_-16px_rgba(2,8,22,0.9)]">
+          <div className="relative aspect-video w-full overflow-hidden bg-[#030812]">
+            <iframe
+              key={startSec}
+              src={embedUrl}
+              title={copy.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+              className="h-full w-full border-0"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#050B18] via-[#050B18]/45 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
-              <p className="mb-1 text-xs font-medium tracking-wide text-[#F6C86E]">
-                {copy.chapters[activeChapter]?.time} · {copy.chapters[activeChapter]?.label}
-              </p>
-              <p className="max-w-2xl text-sm text-slate-100 sm:text-base">
-                {copy.chapters[activeChapter]?.caption}
-              </p>
-
-              {/* Progress scrubber & Play/Pause */}
-              <div className="mt-4 flex items-center gap-4">
-                <button
-                  type="button"
-                  onClick={() => setIsPlaying((v) => !v)}
-                  className="gold-cta flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-transform active:scale-95"
-                  aria-label={isPlaying ? 'Pause' : 'Play'}
-                >
-                  {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 translate-x-0.5" />}
-                </button>
-                <div className="flex-1">
-                  <input
-                    type="range"
-                    min={0}
-                    max={80}
-                    step={1}
-                    value={Math.floor(progress)}
-                    onChange={(e) => {
-                      const val = Number(e.target.value);
-                      setProgress(val);
-                      if (val < 28) setActiveChapter(0);
-                      else if (val < 54) setActiveChapter(1);
-                      else setActiveChapter(2);
-                    }}
-                    className="h-1.5 w-full cursor-pointer accent-[#EAB34B]"
-                    aria-label="Presentation timeline"
-                  />
-                </div>
-                <span className="font-mono text-xs tabular-nums text-slate-300">
-                  {formatSec(progress)} / {copy.duration}
-                </span>
-              </div>
-            </div>
           </div>
 
-          {/* Chapter jump buttons */}
-          <div className="grid grid-cols-1 divide-y divide-sky-400/15 border-t border-sky-400/15 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-            {copy.chapters.map((chap, idx) => (
+          {/* Clean video timestamp & external YouTube bar */}
+          <div className="flex flex-wrap items-center justify-between gap-2.5 border-t border-sky-400/15 bg-[#071329]/90 px-4 py-3">
+            <div className="flex items-center gap-2">
               <button
-                key={chap.time}
                 type="button"
-                onClick={() => {
-                  setActiveChapter(idx);
-                  setProgress(chapterStarts[idx]);
-                  setIsPlaying(true);
-                }}
-                className={`px-4 py-3 text-left transition-colors ${
-                  activeChapter === idx
-                    ? 'bg-sky-500/15 text-white'
-                    : 'text-slate-400 hover:bg-sky-500/5 hover:text-slate-200'
+                onClick={() => setStartSec(ASSETS.introVideoStartSec)}
+                className={`rounded-lg px-3 py-1.5 font-mono text-xs font-medium tabular-nums transition-colors ${
+                  startSec === ASSETS.introVideoStartSec
+                    ? 'bg-[#EAB34B] text-[#081020]'
+                    : 'border border-sky-400/20 bg-[#08152E] text-slate-300 hover:border-sky-400/50 hover:text-white'
                 }`}
               >
-                <div className="font-mono text-xs tabular-nums text-[#F6C86E]">{chap.time}</div>
-                <div className="mt-0.5 text-sm font-medium">{chap.label}</div>
+                {videoLabels.startHighlight}
               </button>
-            ))}
+              <button
+                type="button"
+                onClick={() => setStartSec(0)}
+                className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 font-mono text-xs font-medium tabular-nums transition-colors ${
+                  startSec === 0
+                    ? 'bg-[#EAB34B] text-[#081020]'
+                    : 'border border-sky-400/20 bg-[#08152E] text-slate-300 hover:border-sky-400/50 hover:text-white'
+                }`}
+              >
+                <RotateCcw className="h-3 w-3" />
+                <span>{videoLabels.startBeginning}</span>
+              </button>
+            </div>
+
+            <a
+              href={ASSETS.introVideoUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-[#EAB34B]/40 bg-[#EAB34B]/10 px-3 py-1.5 text-xs font-semibold text-[#FCE19A] transition-colors hover:bg-[#EAB34B] hover:text-[#081020]"
+            >
+              <span>{videoLabels.watchOnYoutube}</span>
+              <ExternalLink className="h-3.5 w-3.5" />
+            </a>
           </div>
         </div>
 

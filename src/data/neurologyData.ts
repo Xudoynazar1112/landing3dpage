@@ -74,9 +74,14 @@ export interface CertificateItem {
 }
 
 export const ASSETS = {
+  logo: '/assets/dzilogo.png',
   heroDoctor: '/assets/aistudio/main2_c58c69fc.PNG',
   aboutConsultation: '/src/assets/images/about_doctor_consultation_1795248827640.jpg',
+  aboutVideoCover: '/assets/aistudio/1_e3f0ee62.jpg',
   scientificSynapse: '/src/assets/images/scientific_synapse_art_1795248807915.jpg',
+  introVideoId: 'ssVKf-fcFNc',
+  introVideoStartSec: 95,
+  introVideoUrl: 'https://www.youtube.com/watch?v=ssVKf-fcFNc&t=95s',
 } as const;
 
 export const CERTIFICATES: CertificateItem[] = [
@@ -207,6 +212,11 @@ export const CLINIC_CONTACTS = {
   telegramUrl: 'https://t.me/drzokhidjon',
   whatsappUrl: 'https://wa.me/998334208848',
   memberships: 'EPNS · EAN · WSO · AOPMC · DUKE Health',
+  mapLat: 41.3631232,
+  mapLng: 69.2412239,
+  googleMapsEmbedUrl: 'https://maps.google.com/maps?q=41.3631232,69.2412239&z=16&output=embed',
+  googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=41.3631232,69.2412239',
+  yandexMapsUrl: 'https://yandex.uz/maps/?pt=69.2412239,41.3631232&z=17&l=map',
 } as const;
 
 export const SPECIALTIES: SpecialtyItem[] = [
@@ -539,7 +549,7 @@ export const SPECIALTIES: SpecialtyItem[] = [
 export const STATS: StatMetric[] = [
   {
     id: 'experience',
-    value: 16,
+    value: 19,
     suffix: '+',
     label: {
       uz: 'yillik klinik tajriba',
@@ -554,7 +564,7 @@ export const STATS: StatMetric[] = [
   },
   {
     id: 'patients',
-    value: 10000,
+    value: 50000,
     suffix: '+',
     label: {
       uz: 'qabul qilingan bemorlar',
@@ -923,7 +933,7 @@ export const UI_COPY: Record<
       eyebrow: 'Dr. Zokhidjon Nurmanovich Ismailov · MD, PhD, DSc (DoctorZi)',
       title: 'Bolalar nevrologiyasi',
       subtitle: 'Bola miyasining sog‘lom rivoji — baxtli kelajak poydevori',
-      expLabel: '16+ yillik klinik tajriba',
+      expLabel: '19+ yillik klinik tajriba',
       degreeLabel: 'PhD · DSc tadqiqotchi · EPNS',
       primaryCta: 'Qabulga yozilish',
       secondaryCta: 'Doktor haqida (1:20)',
@@ -961,7 +971,7 @@ export const UI_COPY: Record<
     },
     mediaSection: {
       aboutTitle: 'Doktor haqida',
-      aboutSubtitle: 'Qisqa tanishuv (1:20) · DoctorZi',
+      aboutSubtitle: 'Video tanishuv · YouTube · DoctorZi',
       aboutAction: 'Tanishuvni ko‘rish',
       scienceTitle: 'Ilmiy faoliyat',
       scienceSubtitle: '30+ maqola, qo‘llanmalar, dasturlar va “Ildiz” kitobi',
@@ -1057,7 +1067,7 @@ export const UI_COPY: Record<
       eyebrow: 'Др. Зохиджон Нурманович Исмаилов · MD, PhD, DSc (DoctorZi)',
       title: 'Детская неврология',
       subtitle: 'Здоровое развитие мозга ребёнка — фундамент счастливого будущего',
-      expLabel: '16+ лет клинического опыта',
+      expLabel: '19+ лет клинического опыта',
       degreeLabel: 'PhD · соискатель DSc · EPNS',
       primaryCta: 'Записаться на приём',
       secondaryCta: 'О докторе (1:20)',
@@ -1095,7 +1105,7 @@ export const UI_COPY: Record<
     },
     mediaSection: {
       aboutTitle: 'О докторе',
-      aboutSubtitle: 'Короткое знакомство (1:20) · DoctorZi',
+      aboutSubtitle: 'Видеознакомство · YouTube · DoctorZi',
       aboutAction: 'Смотреть обращение',
       scienceTitle: 'Научная деятельность',
       scienceSubtitle: '30+ статей, пособия, программы и книга «Ildiz»',
@@ -1191,7 +1201,7 @@ export const UI_COPY: Record<
       eyebrow: 'Dr. Zokhidjon Nurmanovich Ismailov · MD, PhD, DSc (DoctorZi)',
       title: 'Pediatric Neurology',
       subtitle: 'Healthy child brain development — the foundation of a bright future',
-      expLabel: '16+ years clinical practice',
+      expLabel: '19+ years clinical practice',
       degreeLabel: 'PhD · DSc Researcher · EPNS',
       primaryCta: 'Book Appointment',
       secondaryCta: 'Meet the Doctor (1:20)',
@@ -1229,7 +1239,7 @@ export const UI_COPY: Record<
     },
     mediaSection: {
       aboutTitle: 'About the Doctor',
-      aboutSubtitle: 'Brief introduction (1:20) · DoctorZi',
+      aboutSubtitle: 'Video introduction · YouTube · DoctorZi',
       aboutAction: 'Watch introduction',
       scienceTitle: 'Scientific Research',
       scienceSubtitle: '30+ articles, manuals, software & the book “Ildiz”',

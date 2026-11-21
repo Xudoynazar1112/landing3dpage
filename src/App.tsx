@@ -99,13 +99,13 @@ export default function App() {
       {/* TOP BAR CONTRACT: Strictly 3 zones separated by gap-8.
           Relative on mobile (so bottom thumb bar stays strictly under 15% mobile sticky cap), sticky on desktop. */}
       <header className="relative z-40 border-b border-sky-400/12 bg-[#050B18]/88 md:sticky md:top-0">
-        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-2.5 px-3.5 sm:h-[70px] sm:gap-8 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-14 w-full max-w-[1840px] items-center justify-between gap-2.5 px-3.5 sm:h-[70px] sm:gap-8 sm:px-6 lg:px-10 xl:px-14">
           {/* Zone 1: Single-line brand wordmark */}
           <a
             href="#top"
-            className="flex min-w-0 items-center gap-2 text-[13px] font-bold tracking-tight text-white whitespace-nowrap sm:gap-2.5 sm:text-lg"
+            className="flex min-w-0 items-center gap-2 text-[13px] font-bold tracking-tight text-white whitespace-nowrap sm:gap-3 sm:text-lg"
           >
-            <BrandBrainMark className="h-6 w-6 shrink-0 sm:h-7 sm:w-7" />
+            <BrandBrainMark className="h-8 w-8 sm:h-9 sm:w-9" />
             <span className="truncate">Dr. Zokhidjon Ismailov</span>
           </a>
 
@@ -247,12 +247,12 @@ export default function App() {
           {/* Cardless, gradient-melted 3D animated doctor backdrop */}
           <HeroFuturisticPortrait />
 
-          <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="relative z-10 mx-auto w-full max-w-[1840px] px-4 sm:px-6 lg:px-10 xl:px-14">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="max-w-xl lg:max-w-[560px]"
+              className="max-w-xl lg:max-w-[640px] xl:max-w-[720px]"
             >
               {/* Clean Eyebrow Metadata (language switcher moved to navbar) */}
               <div className="mb-4 sm:mb-6">
@@ -264,7 +264,7 @@ export default function App() {
               {/* Display H1 */}
               <h1
                 className="font-bold leading-[1.05] tracking-tight text-white drop-shadow-[0_6px_28px_rgba(5,11,24,0.85)]"
-                style={{ fontSize: 'clamp(2.25rem, 4.7vw, 4.25rem)' }}
+                style={{ fontSize: 'clamp(2.25rem, 4.7vw, 4.5rem)' }}
               >
                 <span className="block">{copy.hero.title.split(' ')[0]}</span>
                 <span className="bg-gradient-to-r from-[#FCE19A] via-[#EAB34B] to-[#D4952B] bg-clip-text text-transparent">
@@ -272,7 +272,7 @@ export default function App() {
                 </span>
               </h1>
 
-              <p className="mt-4 max-w-lg text-sm leading-relaxed text-slate-200 sm:mt-5 sm:text-lg">
+              <p className="mt-4 max-w-xl text-sm leading-relaxed text-slate-200 sm:mt-5 sm:text-lg">
                 {copy.hero.subtitle}
               </p>
 
@@ -284,7 +284,7 @@ export default function App() {
                   </div>
                   <div className="min-w-0">
                     <div className="font-mono text-sm font-semibold tabular-nums text-white sm:text-base">
-                      16+
+                      19+
                     </div>
                     <div className="truncate text-[11px] text-slate-300 sm:text-xs">
                       {copy.hero.expLabel}
@@ -352,13 +352,13 @@ export default function App() {
             (Focus-mode mobile hardened: zero overflow on 320px–430px)
         ============================================================ */}
         <section id="specialties" className="relative overflow-x-clip py-10 sm:py-24">
-          <div className="mx-auto w-full min-w-0 max-w-7xl px-3.5 sm:px-6 lg:px-8">
+          <div className="mx-auto w-full min-w-0 max-w-[1840px] px-3.5 sm:px-6 lg:px-10 xl:px-14">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="mx-auto max-w-3xl text-center"
+              className="mx-auto max-w-4xl text-center"
             >
               <h2 className="text-2xl font-bold tracking-tight text-white sm:text-4xl">
                 {copy.brainSection.heading}
@@ -370,7 +370,7 @@ export default function App() {
 
             {/* Mobile & Tablet (< lg): 3D Brain on top + responsive 2-col 3D touch cards below
                 Desktop (lg+): Iconic 3-left — 3D Brain — 3-right futuristic arrangement */}
-            <div className="mt-7 grid w-full min-w-0 grid-cols-1 items-center gap-4 sm:mt-12 sm:gap-5 lg:grid-cols-12">
+            <div className="mt-7 grid w-full min-w-0 grid-cols-1 items-center gap-4 sm:mt-12 sm:gap-5 lg:grid-cols-12 xl:gap-7">
               {/* Desktop Left 3 Specialties */}
               <div className="hidden min-w-0 lg:col-span-3 lg:grid lg:grid-cols-1 lg:gap-3.5">
                 {leftSpecialties.map((item, idx) => {
@@ -655,13 +655,13 @@ export default function App() {
             SECTION 3: 4-COLUMN QUANTITATIVE IMPACT STRIP + 3D TESTIMONIALS
         ============================================================ */}
         <section id="results" className="relative overflow-x-clip py-12 sm:py-24">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto w-full max-w-[1840px] px-4 sm:px-6 lg:px-10 xl:px-14">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.5 }}
-              className="mb-8 max-w-2xl sm:mb-10"
+              className="mb-8 max-w-3xl sm:mb-10"
             >
               <h2 className="text-2xl font-bold tracking-tight text-white sm:text-4xl">
                 {copy.statsSection.heading}
@@ -684,13 +684,21 @@ export default function App() {
                 return (
                   <div
                     key={stat.id}
-                    className="flex flex-col items-center px-3.5 py-6 text-center sm:px-6 sm:py-9"
+                    className="group flex flex-col items-center px-3.5 py-7 text-center sm:px-6 sm:py-10"
                   >
-                    <Icon className="mb-2.5 h-6 w-6 text-[#F6C86E] sm:mb-3 sm:h-7 sm:w-7" strokeWidth={1.7} />
-                    <div className="text-xl font-bold tracking-tight text-white sm:text-3xl">
-                      <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                    <div
+                      className="mb-3.5 flex h-14 w-14 items-center justify-center rounded-2xl border border-[#EAB34B]/45 bg-[#0A1835] text-[#F6C86E] shadow-[inset_0_1px_1px_rgba(255,244,210,0.35),0_0_28px_-6px_rgba(234,179,75,0.42)] transition-transform duration-300 group-hover:scale-105 sm:mb-4 sm:h-20 sm:w-20 sm:rounded-3xl"
+                    >
+                      <Icon className="h-8 w-8 sm:h-11 sm:w-11" strokeWidth={1.65} />
                     </div>
-                    <div className="mt-1 text-xs font-medium text-slate-200 sm:mt-1.5 sm:text-sm">
+                    <div className="text-2xl font-bold tracking-tight text-white sm:text-4xl xl:text-[42px]">
+                      <AnimatedCounter
+                        value={stat.value}
+                        suffix={stat.suffix}
+                        durationMs={3000}
+                      />
+                    </div>
+                    <div className="mt-1.5 text-xs font-medium text-slate-200 sm:mt-2 sm:text-sm">
                       {stat.label[locale]}
                     </div>
                     <div className="mt-1 text-[11px] text-slate-400 sm:text-xs">
@@ -710,9 +718,9 @@ export default function App() {
             SECTION 4: DUAL 3D EDITORIAL MEDIA CARDS
         ============================================================ */}
         <section id="media" className="relative overflow-x-clip py-8 sm:py-16">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid gap-5 sm:gap-6 md:grid-cols-2">
-              {/* Left Card: Doktor haqida (1:20 video introduction) */}
+          <div className="mx-auto w-full max-w-[1840px] px-4 sm:px-6 lg:px-10 xl:px-14">
+            <div className="grid gap-5 sm:gap-6 md:grid-cols-2 lg:gap-8">
+              {/* Left Card: Doktor haqida (YouTube video introduction) */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -727,24 +735,37 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => setAboutModalOpen(true)}
-                    className="group relative flex min-h-[220px] w-full items-end overflow-hidden rounded-3xl border border-[#EAB34B]/30 bg-[#071226] text-left transition-all duration-200 hover:border-[#EAB34B]/70 active:scale-[0.99] sm:min-h-[300px]"
+                    className="group relative flex min-h-[240px] w-full items-end overflow-hidden rounded-3xl border border-[#EAB34B]/35 bg-[#071226] text-left transition-all duration-200 hover:border-[#EAB34B]/75 active:scale-[0.99] sm:min-h-[300px] xl:min-h-[340px]"
                   >
                     <img
-                      src={ASSETS.aboutConsultation}
+                      src={ASSETS.aboutVideoCover}
                       alt={copy.mediaSection.aboutTitle}
                       referrerPolicy="no-referrer"
-                      className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                      className="absolute inset-0 h-full w-full object-cover object-[center_14%] transition-transform duration-500 group-hover:scale-105 sm:left-[18%] sm:w-[82%] sm:object-[center_18%]"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#050B18] via-[#050B18]/75 to-transparent" />
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background:
+                          'linear-gradient(95deg, #050B18 0%, rgba(5,11,24,0.95) 36%, rgba(5,11,24,0.58) 58%, rgba(5,11,24,0.12) 86%, rgba(5,11,24,0.34) 100%)',
+                      }}
+                    />
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background:
+                          'linear-gradient(180deg, rgba(5,11,24,0.22) 0%, transparent 40%, rgba(5,11,24,0.88) 100%)',
+                      }}
+                    />
                     <div className="relative z-10 flex w-full items-center gap-4 p-5 sm:gap-5 sm:p-8">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-[#F6C86E] bg-[#050B18]/70 text-[#F6C86E] transition-transform duration-200 group-hover:scale-105 sm:h-14 sm:w-14">
-                        <Play className="h-5 w-5 translate-x-0.5 fill-[#F6C86E] sm:h-6 sm:w-6" />
+                      <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-full border-2 border-[#F6C86E] bg-[#050B18]/80 text-[#F6C86E] shadow-[0_0_24px_rgba(234,179,75,0.42)] transition-transform duration-200 group-hover:scale-105 sm:h-16 sm:w-16">
+                        <Play className="h-5 w-5 translate-x-0.5 fill-[#F6C86E] sm:h-7 sm:w-7" />
                       </div>
-                      <div className="min-w-0">
-                        <h3 className="text-xl font-bold text-white sm:text-3xl">
+                      <div className="min-w-0 max-w-sm">
+                        <h3 className="text-xl font-bold text-white drop-shadow-[0_2px_12px_rgba(5,11,24,0.8)] sm:text-3xl">
                           {copy.mediaSection.aboutTitle}
                         </h3>
-                        <p className="mt-1 text-xs text-slate-300 sm:text-sm">
+                        <p className="mt-1 text-xs text-slate-200 sm:text-sm">
                           {copy.mediaSection.aboutSubtitle}
                         </p>
                         <span className="mt-2.5 inline-flex items-center gap-1.5 text-xs font-semibold text-[#F6C86E] sm:mt-3">
@@ -772,7 +793,7 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => setScienceModalOpen(true)}
-                    className="group relative flex min-h-[220px] w-full items-end overflow-hidden rounded-3xl border border-sky-400/25 bg-[#071226] text-left transition-all duration-200 hover:border-[#EAB34B]/70 active:scale-[0.99] sm:min-h-[300px]"
+                    className="group relative flex min-h-[220px] w-full items-end overflow-hidden rounded-3xl border border-sky-400/25 bg-[#071226] text-left transition-all duration-200 hover:border-[#EAB34B]/70 active:scale-[0.99] sm:min-h-[300px] xl:min-h-[340px]"
                   >
                     <img
                       src={ASSETS.scientificSynapse}
@@ -782,7 +803,7 @@ export default function App() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-[#050B18] via-[#050B18]/78 to-transparent" />
                     <div className="relative z-10 flex w-full items-end justify-between gap-4 p-5 sm:gap-5 sm:p-8">
-                      <div className="min-w-0 max-w-xs">
+                      <div className="min-w-0 max-w-md">
                         <div className="mb-1.5 font-mono text-xs tabular-nums text-sky-300 sm:mb-2">
                           30+ · EPNS · EAN · WSO
                         </div>
@@ -820,9 +841,9 @@ export default function App() {
 
       {/* QUIET FOOTER (extra bottom padding on mobile to clear thumb bar) */}
       <footer className="relative z-10 border-t border-sky-400/12 bg-[#040914] pb-24 pt-10 md:pb-10">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 px-4 sm:flex-row sm:px-6 lg:px-8">
+        <div className="mx-auto flex w-full max-w-[1840px] flex-col items-center justify-between gap-5 px-4 sm:flex-row sm:px-6 lg:px-10 xl:px-14">
           <div className="flex items-center gap-2.5 text-sm font-semibold text-white">
-            <BrandBrainMark className="h-6 w-6" />
+            <BrandBrainMark className="h-8 w-8" />
             <span>Dr. Zokhidjon Ismailov · DoctorZi</span>
           </div>
 
