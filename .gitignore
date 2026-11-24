@@ -6,3 +6,11 @@ coverage/
 *.log
 .env*
 !.env.example
+crm/venv/
+crm/__pycache__/
+*.db
+*.pid
+scratch/
+start_servers.sh
+status_servers.sh
+stop_servers.sh

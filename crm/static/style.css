@@ -1,0 +1,86 @@
+/* CRM Maxsus uslublari */
+
+body {
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+/* Telegram Web App moslashuvi */
+body.telegram-app {
+  background-color: var(--tg-theme-bg-color, #f8fafc);
+  color: var(--tg-theme-text-color, #1e293b);
+}
+
+.telegram-app header {
+  border-radius: 0.75rem;
+}
+
+/* Scrollbar dizayni */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Filter tab faol holati */
+.filter-tab.active {
+  background-color: #0284c7 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 10px -2px rgba(2, 132, 199, 0.35);
+}
+
+.filter-tab:not(.active) {
+  background-color: #f1f5f9;
+}
+
+/* Lead kartochkasi hover effekti */
+.lead-row {
+  transition: all 0.15s ease-in-out;
+}
+.lead-row:hover {
+  background-color: #f8fafc;
+}
+
+/* Status ranglari */
+.badge-new {
+  background-color: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+.badge-contacted {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+.badge-scheduled {
+  background-color: #f3e8ff;
+  color: #7e22ce;
+  border: 1px solid #e9d5ff;
+}
+.badge-completed {
+  background-color: #d1fae5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+.badge-cancelled {
+  background-color: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+/* 1-click status almashtirish hover */
+.status-change-btn:hover {
+  transform: translateY(-1px);
+}
+.status-change-btn:active {
+  transform: translateY(0);
+}
+

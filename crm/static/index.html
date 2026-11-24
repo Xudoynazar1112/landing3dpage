@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="uz" class="h-full bg-slate-50">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Dr. Zokhidjon CRM | Tezkor Boshqaruv Paneli</title>
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./static/style.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#f0f7ff',
+              100: '#e0effe',
+              500: '#0284c7',
+              600: '#0369a1',
+              700: '#075985',
+              900: '#0c4a6e',
+            },
+            gold: {
+              400: '#fbbf24',
+              500: '#f59e0b',
+              600: '#d97706',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="h-full font-sans antialiased text-slate-800 bg-[#f8fafc] flex flex-col">
+
+  <!-- ================= AUTH OYNASI (Agar tizimga kirmagan bo'lsa) ================= -->
+  <div id="loginSection" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-200 p-6 sm:p-8">
+      <div class="text-center mb-6">
+        <div class="w-14 h-14 bg-sky-50 text-sky-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-inner">
+          <i data-lucide="shield-check" class="w-8 h-8"></i>
+        </div>
+        <h2 class="text-xl font-bold text-slate-900">Dr. Zokhidjon CRM</h2>
+        <p class="text-xs text-slate-500 mt-1">Xodimlar uchun xavfsiz tizim</p>
+      </div>
+
+      <div id="loginError" class="hidden mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-600 font-medium"></div>
+
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Login</label>
+          <input type="text" id="loginUsername" required placeholder="admin yoki operator"
+                 class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Parol</label>
+          <input type="password" id="loginPassword" required placeholder="••••••••"
+                 class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all">
+        </div>
+        <button type="submit" id="loginBtn"
+                class="w-full py-3 px-4 bg-sky-600 hover:bg-sky-700 active:scale-[0.99] text-white font-semibold rounded-xl text-sm shadow-md shadow-sky-600/25 transition-all flex items-center justify-center gap-2">
+          <span>Tizimga kirish</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= ASOSIY CRM ILovasi ================= -->
+  <div id="appContainer" class="flex-1 flex flex-col max-w-7xl w-full mx-auto p-3 sm:p-6 lg:p-8">
+
+    <!-- 1. YUQORI HEADER -->
+    <header class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-4 sm:p-5 mb-5 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 to-cyan-500 text-white flex items-center justify-center shadow-md shadow-sky-500/20">
+          <i data-lucide="activity" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight flex items-center gap-2">
+            Dr. Zokhidjon CRM
+            <span class="text-[10px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-200 px-2 py-0.5 rounded-full flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Jonli
+            </span>
+          </h1>
+          <p class="text-xs text-slate-500">Mijozlar bilan tezkor 1-click ishlash paneli</p>
+        </div>
+      </div>
+
+      <!-- Xodim profili va chiqish -->
+      <div class="flex items-center gap-2 sm:gap-3 ml-auto">
+        <button id="refreshBtn" title="Ma'lumotlarni yangilash" class="p-2 sm:px-3 sm:py-2 text-xs font-medium text-slate-600 hover:text-sky-600 hover:bg-sky-50 rounded-xl border border-slate-200 transition-all flex items-center gap-1.5">
+          <i data-lucide="refresh-cw" class="w-4 h-4" id="refreshIcon"></i>
+          <span class="hidden sm:inline">Yangilash</span>
+        </button>
+
+        <div class="flex items-center gap-2 pl-2 border-l border-slate-200">
+          <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 font-bold text-xs" id="userAvatar">
+            U
+          </div>
+          <div class="hidden md:block text-left">
+            <div class="text-xs font-bold text-slate-800 leading-none" id="userName">Xodim</div>
+            <div class="text-[10px] text-slate-400 capitalize mt-0.5" id="userRole">Operator</div>
+          </div>
+          <button id="logoutBtn" title="Chiqish" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 2. STATISTIKA KARTALARI (KPI) -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-5">
+      <!-- Jami -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div>
+          <div class="text-xs font-medium text-slate-500">Jami Leadlar</div>
+          <div class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1 font-mono" id="statTotal">0</div>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center">
+          <i data-lucide="users" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+      <!-- Yangi (Diqqat talab) -->
+      <div class="bg-white rounded-2xl p-4 border border-amber-200 shadow-sm flex items-center justify-between bg-amber-50/30">
+        <div>
+          <div class="text-xs font-semibold text-amber-700">Yangi Leadlar</div>
+          <div class="text-xl sm:text-2xl font-extrabold text-amber-600 mt-1 font-mono" id="statNew">0</div>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center">
+          <i data-lucide="bell" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+      <!-- Bog'lanildi -->
+      <div class="bg-white rounded-2xl p-4 border border-blue-200 shadow-sm flex items-center justify-between bg-blue-50/20">
+        <div>
+          <div class="text-xs font-semibold text-blue-700">Bog'lanildi</div>
+          <div class="text-xl sm:text-2xl font-extrabold text-blue-600 mt-1 font-mono" id="statContacted">0</div>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+          <i data-lucide="phone-call" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+      <!-- Uchrashuv belgilandi -->
+      <div class="bg-white rounded-2xl p-4 border border-purple-200 shadow-sm flex items-center justify-between bg-purple-50/20">
+        <div>
+          <div class="text-xs font-semibold text-purple-700">Belgilandi</div>
+          <div class="text-xl sm:text-2xl font-extrabold text-purple-600 mt-1 font-mono" id="statScheduled">0</div>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center">
+          <i data-lucide="calendar" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+      <!-- Yakunlandi / Konversiya -->
+      <div class="col-span-2 sm:col-span-1 bg-white rounded-2xl p-4 border border-emerald-200 shadow-sm flex items-center justify-between bg-emerald-50/20">
+        <div>
+          <div class="text-xs font-semibold text-emerald-700">Yakunlandi</div>
+          <div class="text-xl sm:text-2xl font-extrabold text-emerald-600 mt-1 font-mono" id="statCompleted">0</div>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+          <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. BOSHQARUV PANELI: 1-CLICK FILTRLAR VA QIDIRUV -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-3 sm:p-4 mb-4">
+      <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+        
+        <!-- Status filter tugmalari (1-click) -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none" id="statusFilterTabs">
+          <button data-status="all" class="filter-tab active px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all">
+            Barchasi (<span id="cntAll">0</span>)
+          </button>
+          <button data-status="new" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all text-amber-600 hover:bg-amber-50">
+            🟡 Yangi (<span id="cntNew">0</span>)
+          </button>
+          <button data-status="contacted" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all text-blue-600 hover:bg-blue-50">
+            🔵 Bog'lanildi (<span id="cntContacted">0</span>)
+          </button>
+          <button data-status="scheduled" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all text-purple-600 hover:bg-purple-50">
+            🟣 Belgilandi (<span id="cntScheduled">0</span>)
+          </button>
+          <button data-status="completed" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all text-emerald-600 hover:bg-emerald-50">
+            ✅ Yakunlandi (<span id="cntCompleted">0</span>)
+          </button>
+          <button data-status="cancelled" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all text-slate-500 hover:bg-slate-100">
+            ❌ Bekor (<span id="cntCancelled">0</span>)
+          </button>
+        </div>
+
+        <!-- Qidiruv maydoni -->
+        <div class="relative w-full sm:w-64 shrink-0">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input type="text" id="searchInput" placeholder="Ism, raqam yoki kod..."
+                 class="w-full pl-9 pr-8 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all">
+          <button id="clearSearchBtn" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 4. LEADLAR RO'YXATI (DESKTOP JADVAL VA MOBIL / TELEGRAM KARTALAR) -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden flex-1 flex flex-col">
+      
+      <!-- Yuklanmoqda holati -->
+      <div id="loadingState" class="p-12 text-center text-slate-400">
+        <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto text-sky-600 mb-2"></i>
+        <p class="text-xs">Mijozlar ro'yxati yuklanmoqda...</p>
+      </div>
+
+      <!-- Bo'sh holat -->
+      <div id="emptyState" class="hidden p-12 text-center text-slate-400">
+        <i data-lucide="inbox" class="w-12 h-12 mx-auto text-slate-300 mb-3"></i>
+        <p class="text-sm font-semibold text-slate-600">Hozircha hech qanday lead topilmadi</p>
+        <p class="text-xs text-slate-400 mt-1">Yangi buyurtmalar kelishi bilan shu yerda avtomatik paydo bo'ladi.</p>
+      </div>
+
+      <!-- Leadlar ro'yxati konteyneri -->
+      <div id="leadsList" class="divide-y divide-slate-100 overflow-y-auto max-h-[calc(100vh-330px)]">
+        <!-- JavaScript orqali dinamik to'ldiriladi -->
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ================= TEZKOR IZOH VA TAFSILOTLAR MODALI ================= -->
+  <div id="leadModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
+    <div class="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+      <!-- Modal header -->
+      <div class="p-4 sm:p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 class="text-base font-bold text-slate-900" id="modalLeadName">Mijoz Ismi</h3>
+            <span class="font-mono text-xs px-2 py-0.5 rounded-md bg-slate-200 text-slate-700 font-semibold" id="modalLeadCode">#DZ-000000</span>
+          </div>
+          <p class="text-xs text-slate-500 mt-0.5" id="modalLeadCreated">Sana</p>
+        </div>
+        <button id="closeModalBtn" class="p-2 text-slate-400 hover:text-slate-700 rounded-xl hover:bg-slate-200/60 transition-all">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="p-4 sm:p-5 overflow-y-auto space-y-4">
+        <!-- Aloqa va vaqt -->
+        <div class="grid grid-cols-2 gap-3 bg-sky-50/50 p-3.5 rounded-xl border border-sky-100">
+          <div>
+            <div class="text-[11px] font-semibold text-slate-500">Telefon raqam</div>
+            <a href="#" id="modalLeadPhone" class="text-sm font-bold font-mono text-sky-700 hover:underline flex items-center gap-1.5 mt-0.5">
+              <i data-lucide="phone" class="w-3.5 h-3.5"></i>
+              <span>+998...</span>
+            </a>
+          </div>
+          <div>
+            <div class="text-[11px] font-semibold text-slate-500">Farzand yoshi / Yo'nalish</div>
+            <div class="text-xs font-semibold text-slate-800 mt-0.5" id="modalLeadAgeSpec">-</div>
+          </div>
+          <div>
+            <div class="text-[11px] font-semibold text-slate-500">Belgilangan vaqt</div>
+            <div class="text-xs font-semibold text-slate-800 mt-0.5" id="modalLeadAppointment">-</div>
+          </div>
+          <div>
+            <div class="text-[11px] font-semibold text-slate-500">Format</div>
+            <div class="text-xs font-semibold text-slate-800 mt-0.5" id="modalLeadFormat">🏥 Klinikada</div>
+          </div>
+        </div>
+
+        <!-- Shikoyat / Izoh -->
+        <div id="modalLeadNotesContainer" class="p-3 bg-amber-50/60 rounded-xl border border-amber-200/60 text-xs text-amber-900">
+          <div class="font-bold flex items-center gap-1 text-amber-800 mb-1">
+            <i data-lucide="file-text" class="w-3.5 h-3.5"></i> Mijoz shikoyati / eslatma:
+          </div>
+          <div id="modalLeadNotes" class="italic">Hech narsa yozilmagan</div>
+        </div>
+
+        <!-- 1-Click Tezkor Status O'zgartirish paneli -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-2">1-Click bilan holatni o'zgartirish:</label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="modalStatusButtons">
+            <button data-newstatus="contacted" class="status-change-btn py-2 px-3 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold transition-all">
+              🔵 Bog'landim
+            </button>
+            <button data-newstatus="scheduled" class="status-change-btn py-2 px-3 rounded-xl border border-purple-200 bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-semibold transition-all">
+              🟣 Belgilandi
+            </button>
+            <button data-newstatus="completed" class="status-change-btn py-2 px-3 rounded-xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold transition-all">
+              ✅ Yakunlandi
+            </button>
+            <button data-newstatus="cancelled" class="status-change-btn py-2 px-3 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold transition-all">
+              ❌ Bekor
+            </button>
+          </div>
+        </div>
+
+        <!-- Xodimlar izohlari (Tarix) -->
+        <div class="pt-3 border-t border-slate-100">
+          <h4 class="text-xs font-bold text-slate-700 mb-2 flex items-center justify-between">
+            <span>Izohlar va o'zgarishlar tarixi:</span>
+            <span class="text-[10px] text-slate-400 font-normal" id="modalCommentsCount">0 ta izoh</span>
+          </h4>
+
+          <div id="modalCommentsList" class="space-y-2 mb-3 max-h-40 overflow-y-auto pr-1">
+            <!-- Izohlar ro'yxati -->
+          </div>
+
+          <!-- Yangi izoh qo'shish formasi -->
+          <form id="addCommentForm" class="flex gap-2">
+            <input type="text" id="newCommentInput" required placeholder="Tezkor izoh yozing..."
+                   class="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all">
+            <button type="submit" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-semibold transition-all">
+              Qo'shish
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CRM JavaScript -->
+  <script src="./static/app.js"></script>
+</body>
+</html>
+
