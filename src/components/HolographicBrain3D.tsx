@@ -110,27 +110,6 @@ function createHemisphereGeometry(side: -1 | 1): THREE.BufferGeometry {
 }
 
 /**
- * Creates paired striated cerebellar lobes tucked beneath the posterior cortex.
- */
-function createCerebellumGeometry(side: -1 | 1): THREE.BufferGeometry {
-  const geo = new THREE.SphereGeometry(0.36, 28, 22);
-  const pos = geo.attributes.position;
-  const v = new THREE.Vector3();
-
-  for (let i = 0; i < pos.count; i++) {
-    v.fromBufferAttribute(pos, i);
-    const ridge = Math.sin(v.y * 38.0) * 0.018;
-    v.x = v.x * 1.12 + side * 0.25;
-    v.y = v.y * 0.72 - 0.56 + ridge;
-    v.z = v.z * 0.88 - 0.52;
-    pos.setXYZ(i, v.x, v.y, v.z);
-  }
-
-  geo.computeVertexNormals();
-  return geo;
-}
-
-/**
  * Creates a soft procedural radial glow texture on an offscreen canvas.
  */
 function createRadialGlowTexture(
@@ -361,24 +340,6 @@ export function HolographicBrain3D({
     rightHemiGroup.add(rightHemiMesh, rightHemiWire);
 
     brainAssembly.add(leftHemiGroup, rightHemiGroup);
-
-    // Cerebellum (Left + Right lobes)
-    const cerebellumGroup = new THREE.Group();
-    const cerebellumMat = trackMat(
-      new THREE.MeshStandardMaterial({
-        color: 0x3b9eff,
-        emissive: 0x164a9e,
-        emissiveIntensity: 0.75,
-        roughness: 0.35,
-        metalness: 0.25,
-        transparent: true,
-        opacity: 0.72,
-      })
-    );
-    const leftCereb = new THREE.Mesh(trackGeo(createCerebellumGeometry(-1)), cerebellumMat);
-    const rightCereb = new THREE.Mesh(trackGeo(createCerebellumGeometry(1)), cerebellumMat);
-    cerebellumGroup.add(leftCereb, rightCereb);
-    brainAssembly.add(cerebellumGroup);
 
     // Brainstem (curved TubeGeometry descending into the holographic beam)
     const stemCurve = new THREE.CatmullRomCurve3([
@@ -965,8 +926,6 @@ export function HolographicBrain3D({
       explodeFactor = THREE.MathUtils.damp(explodeFactor, targetExplode, 5.0, dt);
       leftHemiGroup.position.x = -0.34 * explodeFactor;
       rightHemiGroup.position.x = 0.34 * explodeFactor;
-      cerebellumGroup.position.y = -0.2 * explodeFactor;
-      cerebellumGroup.position.z = -0.24 * explodeFactor;
       topChamberGroup.position.y = 0.28 * explodeFactor;
 
       // Subtle floating levitation of the brain assembly

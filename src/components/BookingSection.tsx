@@ -15,6 +15,7 @@ import {
   Video,
   Building2,
 } from 'lucide-react';
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import {
   CLINIC_CONTACTS,
   SPECIALTIES,
@@ -22,6 +23,7 @@ import {
   type Locale,
   type SpecialtyId,
 } from '../data/neurologyData';
+import { db } from '../lib/firebase';
 
 interface BookingRecord {
   code: string;
@@ -124,16 +126,21 @@ export function BookingSection({
 
     setErrors({});
     const code = `DZ-${Math.floor(100000 + Math.random() * 900000)}`;
+    const cleanName = parentName.trim().slice(0, 120);
+    const cleanPhone = phone.trim().slice(0, 32);
+    const cleanAge = childAge.trim().slice(0, 40);
+    const cleanNotes = notes.trim().slice(0, 800);
+
     const record: BookingRecord = {
       code,
-      parentName: parentName.trim(),
-      phone: phone.trim(),
-      childAge: childAge.trim(),
+      parentName: cleanName,
+      phone: cleanPhone,
+      childAge: cleanAge,
       specialtyId: selectedSpecialty,
       format,
       date,
       timeSlot,
-      notes: notes.trim(),
+      notes: cleanNotes,
       createdAt: new Date().toISOString(),
     };
 
@@ -145,6 +152,40 @@ export function BookingSection({
     } catch {
       // Ignore storage quota errors
     }
+
+    // Persist directly to Firestore CRM pipeline (strictly validated create-only rule)
+    void setDoc(doc(db, 'bookings', code), {
+      code,
+      parentName: cleanName,
+      phone: cleanPhone,
+      childAge: cleanAge,
+      specialtyId: selectedSpecialty,
+      format,
+      date,
+      timeSlot,
+      notes: cleanNotes,
+      status: 'new',
+      createdAt: serverTimestamp(),
+    }).catch((err) => {
+      console.error('Firestore booking create failed:', err);
+    });
+
+    // Notify server Telegram bot so doctor receives immediate ping for new booking
+    void fetch('/api/public/booking-alert', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        code,
+        parentName: cleanName,
+        phone: cleanPhone,
+        childAge: cleanAge,
+        specialtyId: selectedSpecialty,
+        format,
+        date,
+        timeSlot,
+        notes: cleanNotes,
+      }),
+    }).catch(() => {});
   };
 
   const resetForm = () => {

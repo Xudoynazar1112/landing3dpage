@@ -1,0 +1,305 @@
+{
+  "entities": {
+    "Booking": {
+      "title": "Booking",
+      "description": "Patient consultation or surgery inquiry submitted from the public website and managed in the Doctor CRM pipeline.",
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "maxLength": 24,
+          "pattern": "^DZ-[0-9]{6}$",
+          "description": "Unique human-readable appointment booking reference code."
+        },
+        "parentName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120,
+          "description": "Parent or guardian full name."
+        },
+        "phone": {
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 32,
+          "description": "Contact phone number."
+        },
+        "childAge": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40,
+          "description": "Child age label."
+        },
+        "specialtyId": {
+          "type": "string",
+          "enum": ["epilepsy", "autism", "sleep", "developmental", "migraine", "adhd"],
+          "description": "Pediatric neurology specialty identifier."
+        },
+        "format": {
+          "type": "string",
+          "enum": ["clinic", "online"],
+          "description": "Consultation format."
+        },
+        "date": {
+          "type": "string",
+          "maxLength": 10,
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "description": "Preferred appointment date (YYYY-MM-DD)."
+        },
+        "timeSlot": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 24,
+          "description": "Preferred appointment time slot."
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 800,
+          "description": "Optional clinical symptoms or parent notes."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["new", "contacted", "confirmed", "converted", "cancelled"],
+          "description": "CRM pipeline status."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the booking was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the booking was last updated."
+        }
+      },
+      "required": [
+        "code",
+        "parentName",
+        "phone",
+        "childAge",
+        "specialtyId",
+        "format",
+        "date",
+        "timeSlot",
+        "notes",
+        "status",
+        "createdAt"
+      ]
+    },
+    "Operation": {
+      "title": "Operation",
+      "description": "Scheduled pediatric neurology operation, procedure, or clinical intervention tracked in the Doctor Calendar and Telegram reminder engine.",
+      "type": "object",
+      "properties": {
+        "patientName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120,
+          "description": "Patient full name."
+        },
+        "parentPhone": {
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 32,
+          "description": "Parent or guardian contact phone."
+        },
+        "childAge": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40,
+          "description": "Patient age."
+        },
+        "procedureTitle": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 160,
+          "description": "Operation or clinical intervention name."
+        },
+        "category": {
+          "type": "string",
+          "enum": ["operation", "video_eeg", "rehabilitation", "consultation"],
+          "description": "Clinical event category."
+        },
+        "specialtyId": {
+          "type": "string",
+          "enum": ["epilepsy", "autism", "sleep", "developmental", "migraine", "adhd"],
+          "description": "Associated pediatric neurology specialty."
+        },
+        "date": {
+          "type": "string",
+          "maxLength": 10,
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "description": "Scheduled date in YYYY-MM-DD (Asia/Tashkent)."
+        },
+        "startTime": {
+          "type": "string",
+          "maxLength": 5,
+          "pattern": "^[0-2][0-9]:[0-5][0-9]$",
+          "description": "Start time in 24h HH:MM format."
+        },
+        "durationMinutes": {
+          "type": "integer",
+          "description": "Estimated duration in minutes (10 to 480)."
+        },
+        "room": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60,
+          "description": "Operating theater or clinic room."
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["routine", "urgent", "critical"],
+          "description": "Clinical urgency priority."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["scheduled", "preparing", "completed", "cancelled"],
+          "description": "Operation lifecycle status."
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Pre-op notes, anesthesia or clinical preparation details."
+        },
+        "remindBeforeMinutes": {
+          "type": "array",
+          "description": "Bounded list (max 4) of reminder offsets in minutes before start."
+        },
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Authenticated doctor admin UID who created this record."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        }
+      },
+      "required": [
+        "patientName",
+        "parentPhone",
+        "childAge",
+        "procedureTitle",
+        "category",
+        "specialtyId",
+        "date",
+        "startTime",
+        "durationMinutes",
+        "room",
+        "priority",
+        "status",
+        "notes",
+        "remindBeforeMinutes",
+        "ownerId",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "CrmSettings": {
+      "title": "CrmSettings",
+      "description": "Non-secret Telegram daily/weekly reminder schedule preferences for the Doctor CRM.",
+      "type": "object",
+      "properties": {
+        "dailyBriefingTime": {
+          "type": "string",
+          "maxLength": 5,
+          "pattern": "^[0-2][0-9]:[0-5][0-9]$",
+          "description": "Morning Telegram daily schedule briefing time (HH:MM)."
+        },
+        "eveningPreviewTime": {
+          "type": "string",
+          "maxLength": 5,
+          "pattern": "^[0-2][0-9]:[0-5][0-9]$",
+          "description": "Evening next-day operations preview time (HH:MM)."
+        },
+        "weeklyDigestDay": {
+          "type": "integer",
+          "description": "Day of week for weekly calendar digest (0=Sun..6=Sat)."
+        },
+        "dailyRemindersEnabled": {
+          "type": "boolean",
+          "description": "Toggle for automated daily Telegram briefings and pre-op alerts."
+        },
+        "preOpOffsets": {
+          "type": "array",
+          "description": "Bounded list (max 4) of default pre-op reminder offsets in minutes."
+        },
+        "timezone": {
+          "type": "string",
+          "maxLength": 40,
+          "description": "IANA timezone identifier (default Asia/Tashkent)."
+        },
+        "updatedBy": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Admin UID who last updated settings."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        }
+      },
+      "required": [
+        "dailyBriefingTime",
+        "eveningPreviewTime",
+        "weeklyDigestDay",
+        "dailyRemindersEnabled",
+        "preOpOffsets",
+        "timezone",
+        "updatedBy",
+        "updatedAt"
+      ]
+    },
+    "AdminUser": {
+      "title": "AdminUser",
+      "description": "Authorized clinic admin record for RBAC verification.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "maxLength": 160,
+          "description": "Verified admin email address."
+        },
+        "role": {
+          "type": "string",
+          "enum": ["doctor_admin"],
+          "description": "Admin role."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp."
+        }
+      },
+      "required": ["email", "role", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/bookings/{bookingId}": {
+      "schema": { "$ref": "#/entities/Booking" },
+      "description": "Public patient booking submissions; strictly readable and manageable only by verified Doctor Admin."
+    },
+    "/operations/{operationId}": {
+      "schema": { "$ref": "#/entities/Operation" },
+      "description": "Doctor daily and weekly surgical/clinical operations calendar entries."
+    },
+    "/crm_settings/{settingId}": {
+      "schema": { "$ref": "#/entities/CrmSettings" },
+      "description": "Doctor Telegram reminder schedule settings (non-secret)."
+    },
+    "/admins/{adminUid}": {
+      "schema": { "$ref": "#/entities/AdminUser" },
+      "description": "RBAC admin registry."
+    }
+  }
+}

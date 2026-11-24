@@ -8,6 +8,7 @@ import {
   ChevronRight,
   GraduationCap,
   Layers,
+  LayoutDashboard,
   Menu,
   MessageCircle,
   Play,
@@ -30,6 +31,7 @@ import { HolographicBrain3D } from './components/HolographicBrain3D';
 import { AmbientNeuralField3D } from './components/AmbientNeuralField3D';
 import { HeroFuturisticPortrait } from './components/HeroFuturisticPortrait';
 import { Certificates3DShowcase } from './components/Certificates3DShowcase';
+import { DoctorCrmDashboard } from './components/DoctorCrmDashboard';
 import { Tilt3DCard } from './components/Tilt3DCard';
 import { BrandBrainMark, SpecialtyIcon } from './components/SpecialtyIcons';
 import { AnimatedCounter } from './components/AnimatedCounter';
@@ -51,6 +53,7 @@ export default function App() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [aboutModalOpen, setAboutModalOpen] = useState(false);
   const [scienceModalOpen, setScienceModalOpen] = useState(false);
+  const [showCrm, setShowCrm] = useState(false);
 
   // Smooth scroll progress bar & ref piped directly to 3D Three.js cameras
   const { scrollYProgress } = useScroll();
@@ -83,6 +86,15 @@ export default function App() {
   };
 
   const statIcons = [Award, Users, BookOpen, Trophy];
+
+  if (showCrm) {
+    return (
+      <DoctorCrmDashboard
+        locale={locale}
+        onBack={() => setShowCrm(false)}
+      />
+    );
+  }
 
   return (
     <div className="neural-grid-bg relative min-h-screen w-full overflow-x-clip bg-[#050B18] text-slate-100">
@@ -168,6 +180,15 @@ export default function App() {
             </div>
             <button
               type="button"
+              onClick={() => setShowCrm(true)}
+              className="hidden min-h-10 items-center gap-1.5 rounded-xl border border-sky-400/25 bg-[#08152E] px-3 py-2 text-xs font-semibold text-sky-200 whitespace-nowrap shrink-0 transition-colors hover:border-[#EAB34B]/60 hover:text-[#FCE19A] md:inline-flex"
+              title="Doctor CRM & Operatsiyalar Kalendari"
+            >
+              <LayoutDashboard className="h-3.5 w-3.5 text-[#F6C86E]" />
+              <span>CRM</span>
+            </button>
+            <button
+              type="button"
               onClick={() => scrollToSection('booking')}
               className="gold-cta hidden min-h-10 items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold whitespace-nowrap shrink-0 transition-transform duration-150 hover:-translate-y-0.5 md:inline-flex"
             >
@@ -223,6 +244,17 @@ export default function App() {
                 className="min-h-11 rounded-xl px-3.5 py-2.5 text-left text-sm font-medium text-slate-200 hover:bg-sky-500/10"
               >
                 {copy.nav.science}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileNavOpen(false);
+                  setShowCrm(true);
+                }}
+                className="flex min-h-11 items-center gap-2 rounded-xl px-3.5 py-2.5 text-left text-sm font-semibold text-[#FCE19A] hover:bg-sky-500/10"
+              >
+                <LayoutDashboard className="h-4 w-4" />
+                <span>Doctor CRM · Kalendar & Bot</span>
               </button>
               <div className="mt-2 border-t border-sky-400/15 pt-3">
                 <button
